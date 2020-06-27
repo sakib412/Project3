@@ -1,0 +1,35 @@
+{% extends "orders/layout.html" %}
+{% block title %}Manage Orders{% endblock %}
+{% block body %}
+<div id='my_orders_container' class='row m-3'>
+    <div class='pr-3 col-sm-7'>
+        <ul>
+            {% for row in All_orders %}
+            <li class='p-2 row' >
+                <a class="col-sm" href="{% url 'orders_manager' row.user row.order_number  %}"><span>Order no: {{row.order_number}} by {{row.user}}</span></a>
+                <span class='col-sm-4 mr-3'>Status: <span class='text-warning'>{{row.status}}</span></span>
+                <a class="btn btn-sm btn-success col-sm-2" role="button" href="{% url 'complete_order' row.user row.order_number  %}">Complete</a>
+                
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-sm-5">
+    <ul>
+        <hr class='bg-info'>
+        {% for check_cat in Checkout_category %}
+            <li class='text-info pr-3'>{{check_cat|cut:"("|cut:")"|cut:","|cut:"'"}}</li>
+            {% for row in Checkout %}
+            {% if row.category == check_cat|cut:"("|cut:")"|cut:","|cut:"'"  %}
+            <li class='pr-3 '>{{ row }}&nbsp;</li>
+            {% endif %}
+            {% endfor %}
+        {% endfor %} 
+        <hr class='bg-info'>
+        <li class='text-info pr-3'><h1>Total 
+            ${{ Total|floatformat:2}}</h1>
+        </li>
+    </ul>
+</div>
+</div>
+{% endblock %}

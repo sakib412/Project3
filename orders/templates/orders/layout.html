@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %} | Pinocchio's Pizza & Subs</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'index' %}">Pinocchio</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+
+                {% for category in Category %}
+
+                <li class="nav-item {% if  Active_category == category %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'menu' category  %}">
+                        {{ category }}
+                    </a>
+                </li>
+                {% endfor %}
+
+            </ul>
+            {% if Category %}
+            <span class="text-white">
+            {{user.username}} </span> &nbsp;|&nbsp;
+            {% if user.is_superuser %}
+            <a href="{% url 'orders_manager' user Order_number %}">Orders manager</a>&nbsp;|&nbsp;
+            {% endif %}
+            {% if not user.is_superuser %}
+            <a href="{% url 'my_orders' Order_number %}">My orders</a>&nbsp;|&nbsp;
+            {% endif %}
+
+            <a class="text-danger" href="{% url 'logout' %}"> Logout</a>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="container-fluid" style="min-height: 78vh;">
+        {% block body %}
+        {% endblock %}
+    </div>
+    <footer class="bg-dark p-3 mt-3"><p class="text-center text-white m-auto ">Developed By <a href="https://nsdev.me">NSDev</a></p></footer>
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+
+</html>

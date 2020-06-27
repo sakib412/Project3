@@ -1,0 +1,37 @@
+{% extends "orders/layout.html" %}
+{% block title %}My Orders {% endblock %}
+{% block body %}
+<div id='my_orders_container' class='row m-3'>
+    <div class='col-sm-6'>
+        <ul>
+            {% for number in All_orders %}
+            <a href="{% url 'my_orders' number.order_number %}">
+                <li><span>Order no: {{number.order_number}}</span><span class='float-right'>Status: <span
+                            class='text-warning'>{{number.status}}</span></span></li>
+            </a>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-sm-6">
+        <ul>
+            <hr class='bg-info'>
+            {% for check_cat in Checkout_category %}
+            <li class='text-info'>{{check_cat|cut:"("|cut:")"|cut:","|cut:"'"}}</li>
+            {% for row in Checkout %}
+            {% if row.category == check_cat|cut:"("|cut:")"|cut:","|cut:"'"  %}
+            <li class='pr-3 text-right'>{{row}}&nbsp;</li>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            <hr class='bg-info'>
+            <li class='text-info'>
+                <h1>Total ${{Total|floatformat:2}}</h1>
+            </li>
+        </ul>
+        {% if Status == 'initiated' and Total %}
+        <a class="btn btn-info mr-3" id='confirm_order' href="{% url 'confirmed' Order_number %}">Confirm
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

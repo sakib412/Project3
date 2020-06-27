@@ -1,0 +1,120 @@
+{% extends "orders/layout.html" %}
+{% block title %}{{ Active_category }}{% endblock %}
+{% block body %}
+{% if message %}
+<p class='text-danger'>{{ message }}</p>
+{% endif %}
+<div class="row m-3">
+
+    <div class="col-sm-7">
+        <div class='p-1'>
+            <table class='table mx-auto '>
+                <caption style='caption-side:top;font-size: 30px;text-align: center'>{{ Active_category }}</caption>
+                {% if Columns == 3 %}
+                <thead class='thead-light'>
+                    <tr>
+                        <th>Name</th>
+                        <th>Small</th>
+                        <th>Large</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in Menu %}
+                    <tr>
+                        {% load static %}
+                        <td>{{ row.name }}</td>
+                        {% if row.small == None %}
+                        <td></td>
+                        {% else %}
+                        <td>${{row.small}}&nbsp;<a href="{% url 'add' Active_category row.name row.small %}"><img
+                                    class='plus bg-success' src="{% static 'img/plus.png' %}"></a></td>
+                        {% endif %}
+                        <td>${{row.large}}&nbsp;<a href="{% url 'add' Active_category row.name row.large %}"><img
+                                    class='plus bg-success' src="{% static 'img/plus.png' %}"></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% endif %}
+                {% if Columns == 2 %}
+                <thead class='thead-light'>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in Menu %}
+                    <tr>
+                        <td>{{ row.name }}</td>
+                        <td>${{ row.price }}&nbsp;
+                            <a href="{% url 'add' Active_category row.name row.price %}">
+                                <img class='plus bg-success' src="{% static 'img/plus.png' %}">
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% endif %}
+                {% if Columns == 1 %}
+                <thead class='thead-light'>
+                    <tr>
+                        <th>Name</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in Menu %}
+                    {% if not forloop.counter|divisibleby:"2"  %}
+                    <tr>
+                        <td>{{row.name}}&nbsp;
+                            <a href="{% url 'add' Active_category row.name Topping_price  %}">
+                                <img style="float: right;" class='plus bg-success ml-0'
+                                    src="{% static 'img/plus.png' %}">
+                            </a>
+                        </td>
+                        {% endif %}
+                        {% if forloop.counter|divisibleby:"2"  %}
+                        <td align="left " class=''>{{row.name}}&nbsp;<a
+                                href="{% url 'add' Active_category row.name Topping_price %}"><img
+                                    class='plus bg-success' style="float: right;" src="{% static 'img/plus.png' %}"></a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+                {% endif %}
+            </table>
+        </div>
+        {% if Active_category == 'Regular Pizza' or Active_category == 'Sicilian Pizza'  %}
+        <p class='text-success text-center'>Special: Double Cheese + Double Onions + Double Fresh Garlic</p>
+        {% endif %}
+    </div>
+    <div id='checkout' class='col-sm-5'>
+        {% if Category %}
+        <!--hide when not logged in-->
+        <h3 class="ml-3">Cart</h3>
+        <ul>
+            <hr class='bg-info'>
+            {% for check_cat in Checkout_category %}
+            <li class='text-info'>{{check_cat|cut:"("|cut:")"|cut:","|cut:"'"}}</li>
+            {% for row in Checkout %}
+            {% if row.category == check_cat|cut:"("|cut:")"|cut:","|cut:"'"  %}
+            <li class=''>
+                {{row}}&nbsp;
+                <a href="{% url 'delete' row.category row.name row.price %}">
+                    <img class='plus rounded bg-danger' src="{% static 'img/minus.png' %}">
+                </a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            <hr class='bg-info'>
+            <li class=''>
+                <h4 class="text-info">Total: ${{Total|floatformat:2}}</h4>
+            </li>
+        </ul>
+        <a id='place_order' class="btn btn-success" href="{% url 'my_orders' Order_number %}">Place order</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
