@@ -1,4 +1,4 @@
-Django==3.2.24
+Django==3.2.25
 gunicorn==19.9.0
 django-heroku==0.3.1
 psycopg2==2.7.7
